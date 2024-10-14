@@ -1,4 +1,118 @@
 package by.merinovvvv.quizer;
 
-public class Quiz {
+/**
+ * Class, который описывает один тест
+ */
+class Quiz {
+
+    private final TaskGenerator generator;
+    private final int taskCount;
+    private int incorrectInputs;
+    private int correctAnswers;
+    private int wrongAnswers;
+    private Task currentTask;
+    private int currentTaskIndex;
+
+    /**
+     * @param generator генератор заданий
+     * @param taskCount количество заданий в тесте
+     */
+    Quiz(TaskGenerator generator, int taskCount) {
+
+        if (generator == null) {
+            throw new IllegalArgumentException("Generator cannot be null");
+        }
+
+        if (taskCount <= 0) {
+            throw new IllegalArgumentException("Task count must be positive");
+        }
+
+        this.generator = generator;
+        this.taskCount = taskCount;
+        this.incorrectInputs = 0;
+        this.correctAnswers = 0;
+        this.wrongAnswers = 0;
+        this.currentTask = null;
+        this.currentTaskIndex = 0;
+    }
+
+    /**
+     * @return задание, повторный вызов вернет следующее
+     * @see Task
+     */
+    Task nextTask() {
+        if (isFinished()) {
+            throw new IllegalStateException("Quiz is finished");
+        }
+        if (currentTask == null || currentTaskIndex > 0) {
+            currentTask = generator.generate();
+            currentTaskIndex++;
+        }
+        return currentTask;
+    }
+
+    /**
+     * Предоставить ответ ученика. Если результат {@link Result#INCORRECT_INPUT}, то счетчик неправильных
+     * ответов не увеличивается, а {@link #nextTask()} в следующий раз вернет тот же самый объект {@link Task}.
+     */
+    Result provideAnswer(String answer) {
+        if (isFinished()) {
+            throw new IllegalArgumentException("Quiz is finished");
+        }
+        if (currentTask == null) {
+            throw new IllegalArgumentException("No task to answer");
+        }
+        Result result = currentTask.validate(answer);
+        switch (result) {
+            case OK:
+                correctAnswers++;
+                break;
+            case WRONG:
+                wrongAnswers++;
+                break;
+            case INCORRECT_INPUT:
+                incorrectInputs++;
+                break;
+        }
+        return result;
+    }
+
+    /**
+     * @return завершен ли тест
+     */
+    boolean isFinished() {
+        return currentTaskIndex >= taskCount;
+    }
+
+    /**
+     * @return количество правильных ответов
+     */
+    int getCorrectAnswerNumber() {
+        return correctAnswers;
+    }
+
+    /**
+     * @return количество неправильных ответов
+     */
+    int getWrongAnswerNumber() {
+        return wrongAnswers;
+    }
+
+    /**
+     * @return количество раз, когда был предоставлен неправильный ввод
+     */
+    int getIncorrectInputNumber() {
+        return incorrectInputs;
+    }
+
+    /**
+     * @return оценка, которая является отношением количества правильных ответов к количеству всех вопросов.
+     *         Оценка выставляется только в конце!
+     */
+    double getMark() {
+        if (!isFinished()) {
+            throw new IllegalArgumentException("Quiz is not finished yet");
+        }
+        return (double) correctAnswers / taskCount;
+    }
 }
