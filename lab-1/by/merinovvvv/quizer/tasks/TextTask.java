@@ -41,6 +41,4 @@ class TextTask implements Task {
         return Objects.equals(this.answer, answer) ? Result.OK : Result.WRONG;
 
     }
-
-    // ...
 }

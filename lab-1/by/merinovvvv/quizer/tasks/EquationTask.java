@@ -2,10 +2,13 @@ package by.merinovvvv.quizer.tasks;
 
 import by.merinovvvv.quizer.Result;
 import by.merinovvvv.quizer.Task;
+import by.merinovvvv.quizer.generators.math.MathTaskGenerator;
+import by.merinovvvv.quizer.tasks.math.AbstractMathTask;
+import by.merinovvvv.quizer.tasks.math.MathTask;
 
 import java.util.Objects;
 
-public class EquationTask implements Task {
+public class EquationTask extends AbstractMathTask implements MathTask {
 
     private final int firstArg;
     private final int secondArg;

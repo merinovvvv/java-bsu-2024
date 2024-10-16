@@ -2,8 +2,10 @@ package by.merinovvvv.quizer.tasks;
 
 import by.merinovvvv.quizer.Result;
 import by.merinovvvv.quizer.Task;
+import by.merinovvvv.quizer.tasks.math.AbstractMathTask;
+import by.merinovvvv.quizer.tasks.math.MathTask;
 
-public class ExpressionTask implements Task {
+public class ExpressionTask extends AbstractMathTask implements MathTask {
 
     private final int firstArg;
     private final String operator;

@@ -1,4 +1,7 @@
 package by.merinovvvv.quizer.tasks.math;
 
-public interface MathTask {
+import by.merinovvvv.quizer.Task;
+
+public interface MathTask extends Task {
+
 }

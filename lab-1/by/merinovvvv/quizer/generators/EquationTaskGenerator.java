@@ -1,9 +1,11 @@
 package by.merinovvvv.quizer.generators;
 
 import by.merinovvvv.quizer.TaskGenerator;
+import by.merinovvvv.quizer.generators.math.AbstractMathTaskGenerator;
+import by.merinovvvv.quizer.generators.math.MathTaskGenerator;
 import by.merinovvvv.quizer.tasks.EquationTask;
 
-class EquationTaskGenerator implements TaskGenerator <EquationTask> {
+class EquationTaskGenerator extends AbstractMathTaskGenerator implements MathTaskGenerator {
     /**
      * @param minNumber              минимальное число
      * @param maxNumber              максимальное число
@@ -44,13 +46,7 @@ class EquationTaskGenerator implements TaskGenerator <EquationTask> {
      */
     @Override
     public EquationTask generate() {
-        int num1 = (int) (Math.random() * (maxNumber - minNumber + 1) + minNumber);
-        int num2 = (int) (Math.random() * (maxNumber - minNumber + 1) + minNumber);
-        int num3 = (int) (Math.random() * (maxNumber - minNumber + 1) + minNumber);
-        String operator = generateSum ? "+" : generateDifference ? "-" : generateMultiplication ? "*" : generateDivision ? "/" : "";
-        if (operator.isEmpty()) {
-            throw new IllegalArgumentException("No operator was selected.");
-        }
-        return new EquationTask(num1, num2, num3, operator);
+        Object[] array = generateMathTask(maxNumber, minNumber, generateSum, generateDifference, generateMultiplication, generateDivision);
+        return new EquationTask((Integer) array[0], (Integer) array[1], (Integer) array[2], String.valueOf(array[3]));
     }
 }

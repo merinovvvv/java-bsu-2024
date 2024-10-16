@@ -1,4 +1,11 @@
 package by.merinovvvv.quizer.tasks.math;
 
-public class AbstractMathTask {
+import by.merinovvvv.quizer.Result;
+
+abstract public class AbstractMathTask implements MathTask {
+
+    abstract public String getText();
+
+    abstract public Result validate(String answer);
+
 }
