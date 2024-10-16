@@ -6,7 +6,7 @@ import by.merinovvvv.quizer.generators.math.MathTaskGenerator;
 import by.merinovvvv.quizer.tasks.EquationTask;
 import by.merinovvvv.quizer.tasks.ExpressionTask;;
 
-class ExpressionTaskGenerator extends AbstractMathTaskGenerator implements MathTaskGenerator {
+public class ExpressionTaskGenerator extends AbstractMathTaskGenerator implements MathTaskGenerator {
     /**
      * @param minNumber              минимальное число
      * @param maxNumber              максимальное число
@@ -24,7 +24,7 @@ class ExpressionTaskGenerator extends AbstractMathTaskGenerator implements MathT
     private final boolean generateDivision;
     private final boolean monkey;
 
-    ExpressionTaskGenerator(
+    public ExpressionTaskGenerator(
             int minNumber,
             int maxNumber,
             boolean generateSum,

@@ -5,7 +5,7 @@ package by.merinovvvv.quizer;
  */
 class Quiz {
 
-    private final TaskGenerator<Task> generator;
+    private final TaskGenerator<? extends Task> generator;
     private final int taskCount;
     private int incorrectInputs;
     private int correctAnswers;
@@ -17,7 +17,7 @@ class Quiz {
      * @param generator генератор заданий
      * @param taskCount количество заданий в тесте
      */
-    Quiz(TaskGenerator<Task> generator, int taskCount) {
+    Quiz(TaskGenerator<? extends Task> generator, int taskCount) {
 
         if (generator == null) {
             throw new IllegalArgumentException("Generator cannot be null");
@@ -45,8 +45,8 @@ class Quiz {
             throw new IllegalStateException("Quiz is finished");
         }
         if (currentTask == null || currentTaskIndex > 0) {
-            currentTask = generator.generate();
-            currentTaskIndex++;
+            currentTask = generator.generate(); //TODO make different tasks
+            //currentTaskIndex++;
         }
         return currentTask;
     }
@@ -66,9 +66,11 @@ class Quiz {
         switch (result) {
             case OK:
                 correctAnswers++;
+                currentTaskIndex++;
                 break;
             case WRONG:
                 wrongAnswers++;
+                currentTaskIndex++;
                 break;
             case INCORRECT_INPUT:
                 incorrectInputs++;
