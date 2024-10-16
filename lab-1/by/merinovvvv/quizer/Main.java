@@ -1,13 +1,15 @@
 package by.merinovvvv.quizer;
 
 import java.util.Map;
+import java.util.Scanner;
 
 public class Main {
 
 
     public static void main(String[] args) {
         Map<String, Quiz> quizMap  = getQuizMap();
-
+        System.out.println("Введите название теста...");
+        Scanner sc = new Scanner(System.in);
     }
 
     /**

@@ -7,7 +7,7 @@ abstract public class AbstractMathTaskGenerator implements MathTaskGenerator {
     @Override
     public Object[] generateMathTask(int maxNumber, int minNumber,
                                         boolean generateSum, boolean generateDifference,
-                                        boolean generateMultiplication, boolean generateDivision) {
+                                        boolean generateMultiplication, boolean generateDivision, boolean monkey) {
         int num1 = (int) (Math.random() * (maxNumber - minNumber + 1) + minNumber);
         int num2 = (int) (Math.random() * (maxNumber - minNumber + 1) + minNumber);
         int num3 = (int) (Math.random() * (maxNumber - minNumber + 1) + minNumber);
@@ -19,6 +19,9 @@ abstract public class AbstractMathTaskGenerator implements MathTaskGenerator {
         arrayToReturn[0] = num1;
         arrayToReturn[1] = num2;
         arrayToReturn[2] = operator;
+        if (monkey) {
+            return arrayToReturn;
+        }
         arrayToReturn[3] = num3;
         return arrayToReturn;
     }

@@ -21,6 +21,7 @@ class EquationTaskGenerator extends AbstractMathTaskGenerator implements MathTas
     private final boolean generateDifference;
     private final boolean generateMultiplication;
     private final boolean generateDivision;
+    private final boolean monkey;
 
     EquationTaskGenerator(
             int minNumber,
@@ -39,6 +40,7 @@ class EquationTaskGenerator extends AbstractMathTaskGenerator implements MathTas
         this.generateDifference = generateDifference;
         this.generateMultiplication = generateMultiplication;
         this.generateDivision = generateDivision;
+        monkey = false;
     }
 
     /**
@@ -46,7 +48,17 @@ class EquationTaskGenerator extends AbstractMathTaskGenerator implements MathTas
      */
     @Override
     public EquationTask generate() {
-        Object[] array = generateMathTask(maxNumber, minNumber, generateSum, generateDifference, generateMultiplication, generateDivision);
+        Object[] array = generateMathTask(maxNumber, minNumber, generateSum, generateDifference, generateMultiplication, generateDivision, monkey);
         return new EquationTask((Integer) array[0], (Integer) array[1], (Integer) array[2], String.valueOf(array[3]));
+    }
+
+    @Override
+    public int getMinNumber() {
+        return minNumber;
+    }
+
+    @Override
+    public int getMaxNumber() {
+        return maxNumber;
     }
 }
