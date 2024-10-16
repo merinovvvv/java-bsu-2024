@@ -5,7 +5,7 @@ package by.merinovvvv.quizer;
  */
 class Quiz {
 
-    private final TaskGenerator generator;
+    private final TaskGenerator<Task> generator;
     private final int taskCount;
     private int incorrectInputs;
     private int correctAnswers;
@@ -17,7 +17,7 @@ class Quiz {
      * @param generator генератор заданий
      * @param taskCount количество заданий в тесте
      */
-    Quiz(TaskGenerator generator, int taskCount) {
+    Quiz(TaskGenerator<Task> generator, int taskCount) {
 
         if (generator == null) {
             throw new IllegalArgumentException("Generator cannot be null");
