@@ -1,12 +1,9 @@
 package by.merinovvvv.quizer.tasks;
 
 import by.merinovvvv.quizer.Result;
-import by.merinovvvv.quizer.Task;
-import by.merinovvvv.quizer.generators.math.MathTaskGenerator;
 import by.merinovvvv.quizer.tasks.math.AbstractMathTask;
 import by.merinovvvv.quizer.tasks.math.MathTask;
 
-import java.util.Objects;
 
 public class EquationTask extends AbstractMathTask implements MathTask {
 
@@ -15,45 +12,36 @@ public class EquationTask extends AbstractMathTask implements MathTask {
     private final int equalsArg;
     private final String operator;
 
-    public EquationTask(int num1, int num2, int num3, String operator) {
+    public EquationTask(int num1, int num2, String operator, int num3) {
         firstArg = num1;
         secondArg = num2;
         equalsArg = num3;
         this.operator = operator;
+        System.out.println("\nEnter the answer rounding to 4 digits after the decimal point!");
     }
 
     @Override
     public String getText() {
-        return firstArg + "x" + operator + secondArg;
+        return firstArg + "x" + operator + secondArg + "=" + equalsArg;
     }
 
     public Result validate(String answer) {
-
-        if (firstArg == 0) {
-            if (!Objects.equals(operator, "*") && !Objects.equals(operator, "/")) {
-                if (secondArg == equalsArg) {
-                    throw new ArithmeticException("Infinite number of solutions.");
-                }
-                throw new ArithmeticException("The equation has no solutions.");
-            }
-            if (equalsArg == 0) {
-                throw new ArithmeticException("Infinite number of solutions.");
-            }
-            throw new ArithmeticException("The equation has no solutions.");
-        }
-
+        double tmp;
         double correctAnswer = switch (operator) {
-            case "+" -> (double) (equalsArg - secondArg) / firstArg;
-            case "-" -> (double) (equalsArg + secondArg) / firstArg;
-            case "*" -> (double) equalsArg / (firstArg * secondArg);
-            case "/" -> {
-                if (secondArg == 0) {
-                    throw new ArithmeticException("Division by zero.");
-                }
-                yield (double) equalsArg * secondArg / firstArg;
-            }
-
-            default -> throw new IllegalArgumentException("Invalid operator.");
+            case "+":
+                tmp = (double) (equalsArg - secondArg) / firstArg;
+                yield Math.round(tmp * 10000.0) / 10000.0;
+            case "-":
+                tmp = (double) (equalsArg + secondArg) / firstArg;
+                yield Math.round(tmp * 10000.0) / 10000.0;
+            case "*":
+                tmp = (double) equalsArg / (firstArg * secondArg);
+                yield Math.round(tmp * 10000.0) / 10000.0;
+            case "/":
+                tmp = (double) equalsArg * secondArg / firstArg;
+                yield Math.round(tmp * 10000.0) / 10000.0;
+            default:
+                throw new IllegalArgumentException("Invalid operator.");
 
         };
 

@@ -1,7 +1,5 @@
 package by.merinovvvv.quizer.generators.math;
 
-import by.merinovvvv.quizer.tasks.EquationTask;
-
 abstract public class AbstractMathTaskGenerator implements MathTaskGenerator {
 
     @Override
@@ -15,6 +13,11 @@ abstract public class AbstractMathTaskGenerator implements MathTaskGenerator {
         if (operator.isEmpty()) {
             throw new IllegalArgumentException("No operator was selected.");
         }
+
+        if (operator.equals("*") && ((num1 == 0 || num2 == 0) && num3 != 0) || (operator.equals("/") && num1 == 0 && num3 != 0) || (operator.equals("/") && num2 == 0)) {
+            return generateMathTask(maxNumber, minNumber, false, false, generateMultiplication, generateDivision, monkey);
+        }
+
         Object[] arrayToReturn = new Object[4];
         arrayToReturn[0] = num1;
         arrayToReturn[1] = num2;

@@ -1,7 +1,6 @@
 package by.merinovvvv.quizer.tasks;
 
 import by.merinovvvv.quizer.Result;
-import by.merinovvvv.quizer.Task;
 import by.merinovvvv.quizer.tasks.math.AbstractMathTask;
 import by.merinovvvv.quizer.tasks.math.MathTask;
 
@@ -15,6 +14,9 @@ public class ExpressionTask extends AbstractMathTask implements MathTask {
         firstArg = num1;
         secondArg = num2;
         this.operator = operator;
+        if (operator.equals("/")) {
+            System.out.println("\nEnter the answer rounding to 4 digits after the decimal point!");
+        }
     }
 
     @Override
@@ -24,16 +26,17 @@ public class ExpressionTask extends AbstractMathTask implements MathTask {
 
     public Result validate(String answer) {
         double correctAnswer = switch (operator) {
-            case "+" -> firstArg + secondArg;
-            case "-" -> firstArg - secondArg;
-            case "*" -> firstArg * secondArg;
-            case "/" -> {
-                if (secondArg == 0) {
-                    throw new ArithmeticException("Division by zero.");
-                }
-                yield (double) firstArg / secondArg;
-            }
-            default -> throw new IllegalArgumentException("Invalid operator.");
+            case "+":
+                yield firstArg + secondArg;
+            case "-":
+                yield firstArg - secondArg;
+            case "*":
+                yield firstArg * secondArg;
+            case "/":
+                double tmp = (double) firstArg / secondArg;
+                yield Math.round(tmp * 10000.0) / 10000.0;
+            default:
+                throw new IllegalArgumentException("Invalid operator.");
         };
 
         try {

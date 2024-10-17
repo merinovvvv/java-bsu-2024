@@ -45,7 +45,7 @@ class Quiz {
             throw new IllegalStateException("Quiz is finished");
         }
         if (currentTask == null || currentTaskIndex > 0) {
-            currentTask = generator.generate(); //TODO make different tasks
+            currentTask = generator.generate();
             //currentTaskIndex++;
         }
         return currentTask;

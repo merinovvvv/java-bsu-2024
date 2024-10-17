@@ -1,11 +1,10 @@
 package by.merinovvvv.quizer.generators;
 
-import by.merinovvvv.quizer.TaskGenerator;
 import by.merinovvvv.quizer.generators.math.AbstractMathTaskGenerator;
 import by.merinovvvv.quizer.generators.math.MathTaskGenerator;
 import by.merinovvvv.quizer.tasks.EquationTask;
 
-class EquationTaskGenerator extends AbstractMathTaskGenerator implements MathTaskGenerator {
+public class EquationTaskGenerator extends AbstractMathTaskGenerator implements MathTaskGenerator {
     /**
      * @param minNumber              минимальное число
      * @param maxNumber              максимальное число
@@ -23,7 +22,7 @@ class EquationTaskGenerator extends AbstractMathTaskGenerator implements MathTas
     private final boolean generateDivision;
     private final boolean monkey;
 
-    EquationTaskGenerator(
+    public EquationTaskGenerator(
             int minNumber,
             int maxNumber,
             boolean generateSum,
@@ -49,7 +48,7 @@ class EquationTaskGenerator extends AbstractMathTaskGenerator implements MathTas
     @Override
     public EquationTask generate() {
         Object[] array = generateMathTask(maxNumber, minNumber, generateSum, generateDifference, generateMultiplication, generateDivision, monkey);
-        return new EquationTask((Integer) array[0], (Integer) array[1], (Integer) array[2], String.valueOf(array[3]));
+        return new EquationTask((Integer) array[0], (Integer) array[1], String.valueOf(array[2]), (Integer) array[3]);
     }
 
     @Override

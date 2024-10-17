@@ -1,9 +1,7 @@
 package by.merinovvvv.quizer.generators;
 
-import by.merinovvvv.quizer.TaskGenerator;
 import by.merinovvvv.quizer.generators.math.AbstractMathTaskGenerator;
 import by.merinovvvv.quizer.generators.math.MathTaskGenerator;
-import by.merinovvvv.quizer.tasks.EquationTask;
 import by.merinovvvv.quizer.tasks.ExpressionTask;;
 
 public class ExpressionTaskGenerator extends AbstractMathTaskGenerator implements MathTaskGenerator {
@@ -36,7 +34,7 @@ public class ExpressionTaskGenerator extends AbstractMathTaskGenerator implement
             throw new IllegalArgumentException("minNumber can't be greater than maxNumber");
         }
         this.minNumber = minNumber;
-        this.maxNumber = minNumber;
+        this.maxNumber = maxNumber;
         this.generateSum = generateSum;
         this.generateDifference = generateDifference;
         this.generateMultiplication = generateMultiplication;
