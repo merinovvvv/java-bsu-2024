@@ -1,5 +1,8 @@
 package by.merinovvvv.quizer;
 
+import by.merinovvvv.quizer.exceptions.QuizFinishedException;
+import by.merinovvvv.quizer.exceptions.QuizNotFinishedException;
+
 /**
  * Class, который описывает один тест
  */
@@ -42,7 +45,7 @@ class Quiz {
      */
     Task nextTask() {
         if (isFinished()) {
-            throw new IllegalStateException("Quiz is finished");
+            throw new QuizFinishedException("Quiz is finished");
         }
         if (currentTask == null || currentTaskIndex > 0) {
             currentTask = generator.generate();

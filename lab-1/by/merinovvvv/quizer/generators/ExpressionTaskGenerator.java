@@ -18,10 +18,6 @@ public class ExpressionTaskGenerator extends AbstractMathTaskGenerator implement
     private final int minNumber;
     private final int maxNumber;
     private final MathTask.Operation operation;
-//    private final boolean generateSum;
-//    private final boolean generateDifference;
-//    private final boolean generateMultiplication;
-//    private final boolean generateDivision;
     private final boolean monkey;
 
     public ExpressionTaskGenerator(
