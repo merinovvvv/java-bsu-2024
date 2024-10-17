@@ -46,7 +46,6 @@ public class Main {
         System.out.println(quiz.getWrongAnswerNumber() + " wrong answers;");
         System.out.println(quiz.getIncorrectInputNumber() + " incorrect inputs.");
         System.out.println("Your final mark is - " + quiz.getMark());
-
     }
 
     /**
@@ -56,9 +55,8 @@ public class Main {
      */
     static Map<String, Quiz> getQuizMap() {
         TaskGenerator<MathTask> taskGenerator = new ExpressionTaskGenerator(1, 6, true, false, false, false);
-
         Map<String, Quiz> quizMap = new HashMap<>(Map.of());
         quizMap.put("test1", new Quiz(taskGenerator, 6));
         return quizMap;
-        }
+    }
 }
