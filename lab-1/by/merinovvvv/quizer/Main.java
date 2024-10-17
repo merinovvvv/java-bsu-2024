@@ -13,7 +13,7 @@ import java.util.Scanner;
 public class Main {
 
 
-    public static void main(String[] args) throws QuizNotFinishedException {
+    public static void main(String[] args) {
 
         //TODO make tests (quizzes) + GroupTaskGenerator, PoolTaskGenerator
         try {
