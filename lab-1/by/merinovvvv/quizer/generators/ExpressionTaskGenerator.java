@@ -2,7 +2,8 @@ package by.merinovvvv.quizer.generators;
 
 import by.merinovvvv.quizer.generators.math.AbstractMathTaskGenerator;
 import by.merinovvvv.quizer.generators.math.MathTaskGenerator;
-import by.merinovvvv.quizer.tasks.ExpressionTask;;
+import by.merinovvvv.quizer.tasks.ExpressionTask;
+import by.merinovvvv.quizer.tasks.math.MathTask;;
 
 public class ExpressionTaskGenerator extends AbstractMathTaskGenerator implements MathTaskGenerator {
     /**
@@ -16,29 +17,24 @@ public class ExpressionTaskGenerator extends AbstractMathTaskGenerator implement
 
     private final int minNumber;
     private final int maxNumber;
-    private final boolean generateSum;
-    private final boolean generateDifference;
-    private final boolean generateMultiplication;
-    private final boolean generateDivision;
+    private final MathTask.Operation operation;
+//    private final boolean generateSum;
+//    private final boolean generateDifference;
+//    private final boolean generateMultiplication;
+//    private final boolean generateDivision;
     private final boolean monkey;
 
     public ExpressionTaskGenerator(
             int minNumber,
             int maxNumber,
-            boolean generateSum,
-            boolean generateDifference,
-            boolean generateMultiplication,
-            boolean generateDivision
+            MathTask.Operation operation
     ) {
         if (minNumber > maxNumber) {
             throw new IllegalArgumentException("minNumber can't be greater than maxNumber");
         }
         this.minNumber = minNumber;
         this.maxNumber = maxNumber;
-        this.generateSum = generateSum;
-        this.generateDifference = generateDifference;
-        this.generateMultiplication = generateMultiplication;
-        this.generateDivision = generateDivision;
+        this.operation = operation;
         monkey = true;
     }
 
@@ -48,7 +44,7 @@ public class ExpressionTaskGenerator extends AbstractMathTaskGenerator implement
 
     @Override
     public ExpressionTask generate() {
-        Object[] array = generateMathTask(maxNumber, minNumber, generateSum, generateDifference, generateMultiplication, generateDivision, monkey);
+        Object[] array = generateMathTask(maxNumber, minNumber, operation, monkey);
         return new ExpressionTask((Integer) array[0], (Integer) array[1], String.valueOf(array[2]));
     }
 

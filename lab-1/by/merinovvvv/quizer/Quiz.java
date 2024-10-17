@@ -111,9 +111,9 @@ class Quiz {
      * @return оценка, которая является отношением количества правильных ответов к количеству всех вопросов.
      *         Оценка выставляется только в конце!
      */
-    double getMark() {
+    double getMark() throws QuizNotFinishedException {
         if (!isFinished()) {
-            throw new IllegalArgumentException("Quiz is not finished yet");
+            throw new QuizNotFinishedException("Quiz is not finished yet");
         }
         return (double) correctAnswers / taskCount;
     }

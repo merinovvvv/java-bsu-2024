@@ -11,7 +11,10 @@ import java.util.Scanner;
 public class Main {
 
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws QuizNotFinishedException {
+
+        //TODO catch exceptions and tests (quizzes)
+
         Map<String, Quiz> quizMap  = getQuizMap();
         Scanner sc = new Scanner(System.in);
         String input = "";
@@ -57,24 +60,29 @@ public class Main {
     static Map<String, Quiz> getQuizMap() {
 
         Map<String, Quiz> quizMap = new HashMap<>(Map.of());
+        MathTask.Operation addOperation = MathTask.Operation.ADDITION;
+        MathTask.Operation subOperation = MathTask.Operation.SUBTRACTION;
+        MathTask.Operation mulOperation = MathTask.Operation.MULTIPLICATION;
+        MathTask.Operation divOperation = MathTask.Operation.DIVISION;
 
-        TaskGenerator<MathTask> expressionTaskGeneratorSum = new ExpressionTaskGenerator(1, 100, true, false, false, false);
-        TaskGenerator<MathTask> equationTaskGeneratorSum = new EquationTaskGenerator(1, 28, true, false, false, false);
+
+        TaskGenerator<MathTask> expressionTaskGeneratorSum = new ExpressionTaskGenerator(1, 100, addOperation);
+        TaskGenerator<MathTask> equationTaskGeneratorSum = new EquationTaskGenerator(1, 28, addOperation);
         quizMap.put("expression sum", new Quiz(expressionTaskGeneratorSum, 10));
         quizMap.put("equation sum", new Quiz(equationTaskGeneratorSum, 10));
 
-        TaskGenerator<MathTask> expressionTaskGeneratorDiff = new ExpressionTaskGenerator(1, 100, false, true, false, false);
-        TaskGenerator<MathTask> equationTaskGeneratorDiff = new EquationTaskGenerator(1, 28, false, true, false, false);
+        TaskGenerator<MathTask> expressionTaskGeneratorDiff = new ExpressionTaskGenerator(1, 100, subOperation);
+        TaskGenerator<MathTask> equationTaskGeneratorDiff = new EquationTaskGenerator(1, 28, subOperation);
         quizMap.put("expression difference", new Quiz(expressionTaskGeneratorDiff, 10));
         quizMap.put("equation difference", new Quiz(equationTaskGeneratorDiff, 10));
 
-        TaskGenerator<MathTask> expressionTaskGeneratorMulti = new ExpressionTaskGenerator(1, 100, false, false, true, false);
-        TaskGenerator<MathTask> equationTaskGeneratorMulti = new EquationTaskGenerator(1, 28, false, false, true, false);
+        TaskGenerator<MathTask> expressionTaskGeneratorMulti = new ExpressionTaskGenerator(1, 100, mulOperation);
+        TaskGenerator<MathTask> equationTaskGeneratorMulti = new EquationTaskGenerator(1, 28, mulOperation);
         quizMap.put("expression multiplication", new Quiz(expressionTaskGeneratorMulti, 10));
         quizMap.put("equation multiplication", new Quiz(equationTaskGeneratorMulti, 10));
 
-        TaskGenerator<MathTask> expressionTaskGeneratorDiv = new ExpressionTaskGenerator(1, 100, false, false, false, true);
-        TaskGenerator<MathTask> equationTaskGeneratorDiv = new EquationTaskGenerator(1, 28, false, false, false, true);
+        TaskGenerator<MathTask> expressionTaskGeneratorDiv = new ExpressionTaskGenerator(1, 100, divOperation);
+        TaskGenerator<MathTask> equationTaskGeneratorDiv = new EquationTaskGenerator(1, 28, divOperation);
         quizMap.put("expression division", new Quiz(expressionTaskGeneratorDiv, 10));
         quizMap.put("equation division", new Quiz(equationTaskGeneratorDiv, 10));
         return quizMap;

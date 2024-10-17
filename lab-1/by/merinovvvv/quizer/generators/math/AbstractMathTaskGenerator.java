@@ -1,21 +1,19 @@
 package by.merinovvvv.quizer.generators.math;
 
+import by.merinovvvv.quizer.tasks.math.MathTask;
+
 abstract public class AbstractMathTaskGenerator implements MathTaskGenerator {
 
     @Override
     public Object[] generateMathTask(int maxNumber, int minNumber,
-                                        boolean generateSum, boolean generateDifference,
-                                        boolean generateMultiplication, boolean generateDivision, boolean monkey) {
+                                     MathTask.Operation operation, boolean monkey) {
         int num1 = (int) (Math.random() * (maxNumber - minNumber + 1) + minNumber);
         int num2 = (int) (Math.random() * (maxNumber - minNumber + 1) + minNumber);
         int num3 = (int) (Math.random() * (maxNumber - minNumber + 1) + minNumber);
-        String operator = generateSum ? "+" : generateDifference ? "-" : generateMultiplication ? "*" : generateDivision ? "/" : "";
-        if (operator.isEmpty()) {
-            throw new IllegalArgumentException("No operator was selected.");
-        }
+        String operator = getString(operation);
 
         if (operator.equals("*") && ((num1 == 0 || num2 == 0) && num3 != 0) || (operator.equals("/") && num1 == 0 && num3 != 0) || (operator.equals("/") && num2 == 0)) {
-            return generateMathTask(maxNumber, minNumber, false, false, generateMultiplication, generateDivision, monkey);
+            return generateMathTask(maxNumber, minNumber, operation, monkey);
         }
 
         Object[] arrayToReturn = new Object[4];
@@ -27,5 +25,19 @@ abstract public class AbstractMathTaskGenerator implements MathTaskGenerator {
         }
         arrayToReturn[3] = num3;
         return arrayToReturn;
+    }
+
+    private static String getString(MathTask.Operation operation) {
+        String operator;
+        switch (operation) {
+            case ADDITION -> operator = "+";
+            case SUBTRACTION -> operator = "-";
+            case MULTIPLICATION -> operator = "*";
+            case DIVISION -> operator = "/";
+
+            default -> throw new IllegalArgumentException("Unknown operation: " + operation);
+        }
+
+        return operator;
     }
 }
