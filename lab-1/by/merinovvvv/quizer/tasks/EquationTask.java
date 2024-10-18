@@ -17,7 +17,6 @@ public class EquationTask extends AbstractMathTask implements MathTask {
         secondArg = num2;
         equalsArg = num3;
         this.operator = operator;
-        System.out.println("\nEnter the answer rounding to 4 digits after the decimal point!");
     }
 
     @Override

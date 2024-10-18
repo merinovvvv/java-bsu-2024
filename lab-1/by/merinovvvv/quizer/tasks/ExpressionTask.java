@@ -14,9 +14,6 @@ public class ExpressionTask extends AbstractMathTask implements MathTask {
         firstArg = num1;
         secondArg = num2;
         this.operator = operator;
-        if (operator.equals("/")) {
-            System.out.println("\nEnter the answer rounding to 4 digits after the decimal point!");
-        }
     }
 
     @Override

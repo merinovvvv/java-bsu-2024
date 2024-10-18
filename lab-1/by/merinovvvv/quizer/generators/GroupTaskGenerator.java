@@ -9,7 +9,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
-class GroupTaskGenerator<T extends Task> implements TaskGenerator<T> {
+public class GroupTaskGenerator<T extends Task> implements TaskGenerator<T> {
     /**
      * Конструктор с переменным числом аргументов
      *
@@ -19,7 +19,7 @@ class GroupTaskGenerator<T extends Task> implements TaskGenerator<T> {
     private final Random random;
 
     @SafeVarargs
-    GroupTaskGenerator(TaskGenerator<T>... generators) {
+    public GroupTaskGenerator(TaskGenerator<T>... generators) {
         generatorList = new ArrayList<>();
         Collections.addAll(generatorList, generators);
         this.random = new Random();
@@ -30,7 +30,7 @@ class GroupTaskGenerator<T extends Task> implements TaskGenerator<T> {
      *
      * @param generators генераторы, которые передаются в конструктор в Collection (например, {@link ArrayList})
      */
-    GroupTaskGenerator(Collection<TaskGenerator<T>> generators) {
+    public GroupTaskGenerator(Collection<TaskGenerator<T>> generators) {
         generatorList = new ArrayList<>(generators);
         this.random = new Random();
     }

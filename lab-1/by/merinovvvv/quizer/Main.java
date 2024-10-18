@@ -2,20 +2,19 @@ package by.merinovvvv.quizer;
 
 import by.merinovvvv.quizer.exceptions.QuizFinishedException;
 import by.merinovvvv.quizer.exceptions.QuizNotFinishedException;
-import by.merinovvvv.quizer.generators.EquationTaskGenerator;
-import by.merinovvvv.quizer.generators.ExpressionTaskGenerator;
+import by.merinovvvv.quizer.generators.*;
+import by.merinovvvv.quizer.tasks.AppleTask;
+import by.merinovvvv.quizer.tasks.EquationTask;
+import by.merinovvvv.quizer.tasks.ExpressionTask;
+import by.merinovvvv.quizer.tasks.TextTask;
 import by.merinovvvv.quizer.tasks.math.MathTask;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Scanner;
+import java.util.*;
 
 public class Main {
 
 
     public static void main(String[] args) {
-
-        //TODO make tests (quizzes) + GroupTaskGenerator, PoolTaskGenerator
         try {
             Map<String, Quiz> quizMap = getQuizMap();
             Scanner sc = new Scanner(System.in);
@@ -25,9 +24,6 @@ public class Main {
             while (input.isEmpty() || quiz == null) {
                 System.out.println("Enter the name of the test...");
                 input = sc.nextLine().trim();
-                if (input.isEmpty()) {
-                    System.out.println("Input is empty. Try again.");
-                }
                 quiz = quizMap.get(input);
                 if (quiz == null) {
                     System.out.println("Test not found. Try again.");
@@ -75,6 +71,8 @@ public class Main {
         MathTask.Operation divOperation = MathTask.Operation.DIVISION;
 
         try {
+
+            //ExpressionTaskGenerators and EquationTaskGenerators use
             TaskGenerator<MathTask> expressionTaskGeneratorSum = new ExpressionTaskGenerator(1, 100, addOperation);
             TaskGenerator<MathTask> equationTaskGeneratorSum = new EquationTaskGenerator(1, 28, addOperation);
             quizMap.put("expression sum", new Quiz(expressionTaskGeneratorSum, 10));
@@ -94,10 +92,85 @@ public class Main {
             TaskGenerator<MathTask> equationTaskGeneratorDiv = new EquationTaskGenerator(1, 28, divOperation);
             quizMap.put("expression division", new Quiz(expressionTaskGeneratorDiv, 10));
             quizMap.put("equation division", new Quiz(equationTaskGeneratorDiv, 10));
+
+            //GroupTaskGenerator use
+
+            TaskGenerator<MathTask> groupExpressionTaskGenerator = new GroupTaskGenerator<>(expressionTaskGeneratorSum, expressionTaskGeneratorDiff, expressionTaskGeneratorMulti, expressionTaskGeneratorDiv);
+            TaskGenerator<MathTask> groupEquationTaskGenerator = new GroupTaskGenerator<>(equationTaskGeneratorSum, equationTaskGeneratorDiff, equationTaskGeneratorMulti, equationTaskGeneratorDiv);
+            quizMap.put("group expression", new Quiz(groupExpressionTaskGenerator, 10));
+            quizMap.put("group equation", new Quiz(groupEquationTaskGenerator, 10));
+
+            //GroupTaskGenerator with lists use
+
+            List<TaskGenerator<MathTask>> expressionGeneratorList = new ArrayList<>();
+            List<TaskGenerator<MathTask>> equationGeneratorList = new ArrayList<>();
+
+            expressionGeneratorList.add(expressionTaskGeneratorSum);
+            expressionGeneratorList.add(expressionTaskGeneratorDiff);
+            expressionGeneratorList.add(expressionTaskGeneratorMulti);
+            expressionGeneratorList.add(expressionTaskGeneratorDiv);
+            TaskGenerator<MathTask> groupExpressionTaskGeneratorListed = new GroupTaskGenerator<>(expressionGeneratorList);
+            quizMap.put("group expression 2", new Quiz(groupExpressionTaskGeneratorListed, 10));
+
+            equationGeneratorList.add(equationTaskGeneratorSum);
+            equationGeneratorList.add(equationTaskGeneratorDiff);
+            equationGeneratorList.add(equationTaskGeneratorMulti);
+            equationGeneratorList.add(equationTaskGeneratorDiv);
+            TaskGenerator<MathTask> groupEquationTaskGeneratorListed = new GroupTaskGenerator<>(equationGeneratorList);
+            quizMap.put("group equation 2", new Quiz(groupEquationTaskGeneratorListed, 10));
+
+            //PoolTaskGenerator use
+            TaskGenerator<MathTask> poolExpressionTaskGenerator = new PoolTaskGenerator<>(true,
+                    new ExpressionTask(12, 28, "+"),
+                    new ExpressionTask(12, 28, "-"),
+                    new ExpressionTask(12, 28, "*"),
+                    new ExpressionTask(12, 28, "/")
+            );
+            quizMap.put("pool expression", new Quiz(poolExpressionTaskGenerator, 10));
+
+            TaskGenerator<MathTask> poolEquationTaskGenerator = new PoolTaskGenerator<>(true,
+                    new EquationTask(12, 28,  "+", 54),
+                    new EquationTask(12, 28, "-", 54),
+                    new EquationTask(12, 28, "*", 54),
+                    new EquationTask(12, 28, "/", 54)
+            );
+            quizMap.put("pool equation", new Quiz(poolEquationTaskGenerator, 10));
+
+            //Capital cities quiz
+            TaskGenerator<TextTask> groupTextTaskGenerator = getCapitalsTaskGenerator();
+            quizMap.put("capitals", new Quiz(groupTextTaskGenerator, 5));
+
+            //Apple tasks
+            TaskGenerator<AppleTask> AppleTaskGenerator = new AppleTaskGenerator(1, 100);
+            quizMap.put("apples", new Quiz(AppleTaskGenerator, 10));
+
+
         } catch (IllegalArgumentException e) {
             System.out.println("Error while creating quizzes: " + e.getMessage());
         }
 
         return quizMap;
+    }
+
+    private static TaskGenerator<TextTask> getCapitalsTaskGenerator() {
+        List<TaskGenerator<TextTask>> textTaskGeneratorList = new ArrayList<>();
+        TaskGenerator<TextTask> capitalTask1 = new TextTaskGenerator("What is the capital of Belarus?", "Minsk");
+        TaskGenerator<TextTask> capitalTask2 = new TextTaskGenerator("What is the capital of Russia?", "Moscow");
+        TaskGenerator<TextTask> capitalTask3 = new TextTaskGenerator("What is the capital of Ukraine?", "Kyiv");
+        TaskGenerator<TextTask> capitalTask4 = new TextTaskGenerator("What is the capital of Poland?", "Warsaw");
+        TaskGenerator<TextTask> capitalTask5 = new TextTaskGenerator("What is the capital of Germany?", "Berlin");
+        TaskGenerator<TextTask> capitalTask6 = new TextTaskGenerator("What is the capital of France?", "Paris");
+        TaskGenerator<TextTask> capitalTask7 = new TextTaskGenerator("What is the capital of Spain?", "Madrid");
+        TaskGenerator<TextTask> capitalTask8 = new TextTaskGenerator("What is the capital of Italy?", "Rome");
+
+        textTaskGeneratorList.add(capitalTask1);
+        textTaskGeneratorList.add(capitalTask2);
+        textTaskGeneratorList.add(capitalTask3);
+        textTaskGeneratorList.add(capitalTask4);
+        textTaskGeneratorList.add(capitalTask5);
+        textTaskGeneratorList.add(capitalTask6);
+        textTaskGeneratorList.add(capitalTask7);
+        textTaskGeneratorList.add(capitalTask8);
+        return new GroupTaskGenerator<>(textTaskGeneratorList);
     }
 }

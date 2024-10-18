@@ -9,11 +9,11 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 
-public class PoolTaskGenerator implements TaskGenerator<Task> {
+public class PoolTaskGenerator <T extends Task> implements TaskGenerator<T> {
 
     private final boolean allowDuplicate;
-    private final List<Task> tasks;
-    private final List<Task> usedTasks;
+    private final List<T> tasks;
+    private final List<T> usedTasks;
     private final Random random;
 
     /**
@@ -22,9 +22,10 @@ public class PoolTaskGenerator implements TaskGenerator<Task> {
      * @param allowDuplicate разрешить повторения
      * @param tasks          задания, которые в конструктор передаются через запятую
      */
-    PoolTaskGenerator(
+    @SafeVarargs
+    public PoolTaskGenerator(
             boolean allowDuplicate,
-            Task... tasks
+            T... tasks
     ) {
         this.allowDuplicate = allowDuplicate;
         this.tasks = new ArrayList<>(List.of(tasks));
@@ -40,7 +41,7 @@ public class PoolTaskGenerator implements TaskGenerator<Task> {
      */
     PoolTaskGenerator(
             boolean allowDuplicate,
-            Collection<Task> tasks
+            Collection<T> tasks
     ) {
         this.allowDuplicate = allowDuplicate;
         this.tasks = new ArrayList<>(tasks);
@@ -51,7 +52,7 @@ public class PoolTaskGenerator implements TaskGenerator<Task> {
     /**
      * @return случайная задача из списка
      */
-    public Task generate() {
+    public T generate() {
 
         if (tasks.isEmpty()) {
             throw new RuntimeException("No tasks available to generate");
@@ -61,7 +62,7 @@ public class PoolTaskGenerator implements TaskGenerator<Task> {
             throw new RuntimeException("No tasks available to generate");
         }
 
-        Task task;
+        T task;
         do {
             int index = random.nextInt(tasks.size());
             task = tasks.get(index);
