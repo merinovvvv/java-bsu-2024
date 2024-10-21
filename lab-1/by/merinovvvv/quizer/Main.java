@@ -152,7 +152,7 @@ public class Main {
         return quizMap;
     }
 
-    private static TaskGenerator<TextTask> getCapitalsTaskGenerator() {
+    static TaskGenerator<TextTask> getCapitalsTaskGenerator() {
         List<TaskGenerator<TextTask>> textTaskGeneratorList = new ArrayList<>();
         TaskGenerator<TextTask> capitalTask1 = new TextTaskGenerator("What is the capital of Belarus?", "Minsk");
         TaskGenerator<TextTask> capitalTask2 = new TextTaskGenerator("What is the capital of Russia?", "Moscow");

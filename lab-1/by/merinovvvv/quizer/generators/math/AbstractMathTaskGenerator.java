@@ -27,7 +27,7 @@ abstract public class AbstractMathTaskGenerator implements MathTaskGenerator {
         return arrayToReturn;
     }
 
-    private static String getString(MathTask.Operation operation) {
+    static String getString(MathTask.Operation operation) {
         String operator;
         switch (operation) {
             case ADDITION -> operator = "+";

@@ -5,8 +5,8 @@ import by.merinovvvv.quizer.Task;
 
 public class AppleTask implements Task {
 
-    private int num1;
-    private int num2;
+    int num1;
+    int num2;
 
     public AppleTask(
             int minNumber,
