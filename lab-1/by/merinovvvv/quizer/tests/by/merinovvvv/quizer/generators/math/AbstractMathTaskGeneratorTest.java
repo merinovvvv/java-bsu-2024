@@ -33,8 +33,7 @@ class AbstractMathTaskGeneratorTest {
 
         // Check that the result array has the correct length
         Assertions.assertEquals(4, result.length);
-
-        // Check that the first three elements are integers and the fourth is a string
+        
         assertInstanceOf(Integer.class, result[0]);
         assertInstanceOf(Integer.class, result[1]);
         assertInstanceOf(String.class, result[2]);

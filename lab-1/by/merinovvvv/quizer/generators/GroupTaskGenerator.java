@@ -47,11 +47,10 @@ public class GroupTaskGenerator<T extends Task> implements TaskGenerator<T> {
         }
 
         for (int i = 0; i < generatorList.size(); i++) {
-            int index = random.nextInt(generatorList.size());
             try {
-                return generatorList.get(index).generate();
+                return generatorList.get(i).generate();
             } catch (Exception exception) {
-                System.err.println("Generator at index " + index + " failed: " + exception.getMessage());
+                System.err.println("Generator at index " + i + " failed: " + exception.getMessage());
             }
         }
         throw new RuntimeException("All generators failed to generate a task");

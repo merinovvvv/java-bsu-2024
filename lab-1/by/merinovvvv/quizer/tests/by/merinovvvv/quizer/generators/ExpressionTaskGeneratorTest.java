@@ -1,6 +1,5 @@
 package by.merinovvvv.quizer.generators;
 
-import by.merinovvvv.quizer.tasks.EquationTask;
 import by.merinovvvv.quizer.tasks.ExpressionTask;
 import by.merinovvvv.quizer.tasks.math.MathTask;
 import org.junit.jupiter.api.Assertions;
