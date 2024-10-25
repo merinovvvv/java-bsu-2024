@@ -50,10 +50,13 @@ public class Main {
             System.out.println("Your final mark is - " + quiz.getMark());
         } catch (QuizNotFinishedException e) {
             System.out.println("Error while getting mark: " + e.getMessage());
+            System.exit(1);
         } catch (IllegalArgumentException e) {
             System.out.println("Error while creating quizzes: " + e.getMessage());
+            System.exit(1);
         } catch (QuizFinishedException e) {
             System.out.println("Error while getting task: " + e.getMessage());
+            System.exit(1);
         }
     }
 
@@ -137,8 +140,8 @@ public class Main {
             quizMap.put("pool equation", new Quiz(poolEquationTaskGenerator, 10));
 
             //Capital cities quiz
-            TaskGenerator<TextTask> groupTextTaskGenerator = getCapitalsTaskGenerator();
-            quizMap.put("capitals", new Quiz(groupTextTaskGenerator, 5));
+            PoolTaskGenerator<Task> capitalsTasks = getCapitalsTaskGenerator();
+            quizMap.put("capitals", new Quiz(capitalsTasks, 6));
 
             //Apple tasks
             TaskGenerator<AppleTask> AppleTaskGenerator = new AppleTaskGenerator(1, 100);
@@ -147,30 +150,30 @@ public class Main {
 
         } catch (IllegalArgumentException e) {
             System.out.println("Error while creating quizzes: " + e.getMessage());
+            System.exit(1);
         }
-
         return quizMap;
     }
 
-    static TaskGenerator<TextTask> getCapitalsTaskGenerator() {
-        List<TaskGenerator<TextTask>> textTaskGeneratorList = new ArrayList<>();
-        TaskGenerator<TextTask> capitalTask1 = new TextTaskGenerator("What is the capital of Belarus?", "Minsk");
-        TaskGenerator<TextTask> capitalTask2 = new TextTaskGenerator("What is the capital of Russia?", "Moscow");
-        TaskGenerator<TextTask> capitalTask3 = new TextTaskGenerator("What is the capital of Ukraine?", "Kyiv");
-        TaskGenerator<TextTask> capitalTask4 = new TextTaskGenerator("What is the capital of Poland?", "Warsaw");
-        TaskGenerator<TextTask> capitalTask5 = new TextTaskGenerator("What is the capital of Germany?", "Berlin");
-        TaskGenerator<TextTask> capitalTask6 = new TextTaskGenerator("What is the capital of France?", "Paris");
-        TaskGenerator<TextTask> capitalTask7 = new TextTaskGenerator("What is the capital of Spain?", "Madrid");
-        TaskGenerator<TextTask> capitalTask8 = new TextTaskGenerator("What is the capital of Italy?", "Rome");
+    static PoolTaskGenerator<Task> getCapitalsTaskGenerator() {
+        List<Task> textTaskList = new ArrayList<>();
+        Task capitalTask1 = new TextTask("What is the capital of Belarus?", "Minsk");
+        Task capitalTask2 = new TextTask("What is the capital of Russia?", "Moscow");
+        Task capitalTask3 = new TextTask("What is the capital of Ukraine?", "Kyiv");
+        Task capitalTask4 = new TextTask("What is the capital of Poland?", "Warsaw");
+        Task capitalTask5 = new TextTask("What is the capital of Germany?", "Berlin");
+        Task capitalTask6 = new TextTask("What is the capital of France?", "Paris");
+        Task capitalTask7 = new TextTask("What is the capital of Spain?", "Madrid");
+        Task capitalTask8 = new TextTask("What is the capital of Italy?", "Rome");
 
-        textTaskGeneratorList.add(capitalTask1);
-        textTaskGeneratorList.add(capitalTask2);
-        textTaskGeneratorList.add(capitalTask3);
-        textTaskGeneratorList.add(capitalTask4);
-        textTaskGeneratorList.add(capitalTask5);
-        textTaskGeneratorList.add(capitalTask6);
-        textTaskGeneratorList.add(capitalTask7);
-        textTaskGeneratorList.add(capitalTask8);
-        return new GroupTaskGenerator<>(textTaskGeneratorList);
+        textTaskList.add(capitalTask1);
+        textTaskList.add(capitalTask2);
+        textTaskList.add(capitalTask3);
+        textTaskList.add(capitalTask4);
+        textTaskList.add(capitalTask5);
+        textTaskList.add(capitalTask6);
+        textTaskList.add(capitalTask7);
+        textTaskList.add(capitalTask8);
+        return new PoolTaskGenerator<>(false, textTaskList);
     }
 }

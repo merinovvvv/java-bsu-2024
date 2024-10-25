@@ -48,7 +48,12 @@ class Quiz {
             throw new QuizFinishedException("Quiz is finished");
         }
         if (currentTask == null || currentTaskIndex > 0) {
-            currentTask = generator.generate();
+            try {
+                currentTask = generator.generate();
+            } catch (RuntimeException e) {
+                System.out.println(e.getMessage());
+                System.exit(1);
+            }
             //currentTaskIndex++;
         }
         return currentTask;
@@ -65,21 +70,27 @@ class Quiz {
         if (currentTask == null) {
             throw new IllegalArgumentException("No task to answer");
         }
-        Result result = currentTask.validate(answer);
-        switch (result) {
-            case OK:
-                correctAnswers++;
-                currentTaskIndex++;
-                break;
-            case WRONG:
-                wrongAnswers++;
-                currentTaskIndex++;
-                break;
-            case INCORRECT_INPUT:
-                incorrectInputs++;
-                break;
+        try {
+            Result result = currentTask.validate(answer);
+            switch (result) {
+                case OK:
+                    correctAnswers++;
+                    currentTaskIndex++;
+                    break;
+                case WRONG:
+                    wrongAnswers++;
+                    currentTaskIndex++;
+                    break;
+                case INCORRECT_INPUT:
+                    incorrectInputs++;
+                    break;
+            }
+            return result;
+        } catch (IllegalArgumentException e) {
+            System.out.println(e.getMessage());
+            System.exit(1);
+            return null;
         }
-        return result;
     }
 
     /**

@@ -1,6 +1,5 @@
 package by.merinovvvv.quizer.generators;
 
-import by.merinovvvv.quizer.Task;
 import by.merinovvvv.quizer.TaskGenerator;
 import by.merinovvvv.quizer.tasks.AppleTask;
 

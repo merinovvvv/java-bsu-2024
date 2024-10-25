@@ -10,21 +10,27 @@ abstract public class AbstractMathTaskGenerator implements MathTaskGenerator {
         int num1 = (int) (Math.random() * (maxNumber - minNumber + 1) + minNumber);
         int num2 = (int) (Math.random() * (maxNumber - minNumber + 1) + minNumber);
         int num3 = (int) (Math.random() * (maxNumber - minNumber + 1) + minNumber);
-        String operator = getString(operation);
+        try {
+            String operator = getString(operation);
 
-        if (operator.equals("*") && ((num1 == 0 || num2 == 0) && num3 != 0) || (operator.equals("/") && num1 == 0 && num3 != 0) || (operator.equals("/") && num2 == 0)) {
-            return generateMathTask(maxNumber, minNumber, operation, monkey);
-        }
+            if (operator.equals("*") && ((num1 == 0 || num2 == 0) && num3 != 0) || (operator.equals("/") && num1 == 0 && num3 != 0) || (operator.equals("/") && num2 == 0)) {
+                return generateMathTask(maxNumber, minNumber, operation, monkey);
+            }
 
-        Object[] arrayToReturn = new Object[4];
-        arrayToReturn[0] = num1;
-        arrayToReturn[1] = num2;
-        arrayToReturn[2] = operator;
-        if (monkey) {
+            Object[] arrayToReturn = new Object[4];
+            arrayToReturn[0] = num1;
+            arrayToReturn[1] = num2;
+            arrayToReturn[2] = operator;
+            if (monkey) {
+                return arrayToReturn;
+            }
+            arrayToReturn[3] = num3;
             return arrayToReturn;
+        } catch (IllegalArgumentException e) {
+            e.getMessage();
+            System.exit(1);
+            return null;
         }
-        arrayToReturn[3] = num3;
-        return arrayToReturn;
     }
 
     static String getString(MathTask.Operation operation) {

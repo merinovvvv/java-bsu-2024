@@ -41,16 +41,22 @@ public class GroupTaskGenerator<T extends Task> implements TaskGenerator<T> {
      *         Если все генераторы выбрасывают исключение, то и тут выбрасывается исключение.
      */
     public T generate() {
-
         if (generatorList.isEmpty()) {
             throw new IllegalArgumentException("No generators available");
         }
 
-        for (int i = 0; i < generatorList.size(); i++) {
+        List<Integer> triedIndexes = new ArrayList<>();
+
+        while (triedIndexes.size() < generatorList.size()) {
+            int randomIndex = random.nextInt(generatorList.size());
+            if (triedIndexes.contains(randomIndex)) {
+                continue;
+            }
+            triedIndexes.add(randomIndex);
             try {
-                return generatorList.get(i).generate();
-            } catch (Exception exception) {
-                System.err.println("Generator at index " + i + " failed: " + exception.getMessage());
+                return generatorList.get(randomIndex).generate();
+            } catch (RuntimeException e) {
+                System.err.println("Generator at index " + randomIndex + " failed: " + e.getMessage());
             }
         }
         throw new RuntimeException("All generators failed to generate a task");

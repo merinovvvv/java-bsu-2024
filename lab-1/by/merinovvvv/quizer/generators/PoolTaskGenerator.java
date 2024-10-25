@@ -39,7 +39,7 @@ public class PoolTaskGenerator <T extends Task> implements TaskGenerator<T> {
      * @param allowDuplicate разрешить повторения
      * @param tasks          задания, которые передаются в конструктор в Collection (например, {@link LinkedList})
      */
-    PoolTaskGenerator(
+    public PoolTaskGenerator(
             boolean allowDuplicate,
             Collection<T> tasks
     ) {
@@ -54,11 +54,7 @@ public class PoolTaskGenerator <T extends Task> implements TaskGenerator<T> {
      */
     public T generate() {
 
-        if (tasks.isEmpty()) {
-            throw new RuntimeException("No tasks available to generate");
-        }
-
-        if (!allowDuplicate && usedTasks.size() == tasks.size()) {
+        if (tasks.isEmpty() || !allowDuplicate && usedTasks.size() == tasks.size()) {
             throw new RuntimeException("No tasks available to generate");
         }
 

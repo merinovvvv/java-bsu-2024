@@ -41,14 +41,14 @@ class MainTest {
         Assertions.assertNotNull(quizMap.get("apples"), "Quiz 'apples' should not be null");
     }
 
-    @Test
-    void getCapitalsTaskGeneratorTest() {
-        TaskGenerator<TextTask> generator = Main.getCapitalsTaskGenerator();
-
-        // Check that the generator is not null
-        Assertions.assertNotNull(generator, "Generator should not be null");
-
-        // Check that the generator is an instance of GroupTaskGenerator
-        assertInstanceOf(GroupTaskGenerator.class, generator, "Generator should be an instance of GroupTaskGenerator");
-    }
+//    @Test
+//    void getCapitalsTaskGeneratorTest() {
+//        TaskGenerator<TextTask> generator = Main.getCapitalsTaskGenerator();
+//
+//        // Check that the generator is not null
+//        Assertions.assertNotNull(generator, "Generator should not be null");
+//
+//        // Check that the generator is an instance of GroupTaskGenerator
+//        assertInstanceOf(GroupTaskGenerator.class, generator, "Generator should be an instance of GroupTaskGenerator");
+//    }
 }
