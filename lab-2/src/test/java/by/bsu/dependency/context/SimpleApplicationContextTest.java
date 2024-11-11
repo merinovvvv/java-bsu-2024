@@ -8,15 +8,16 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
-class HardCodedSingletonApplicationContextTest {
+import static org.junit.jupiter.api.Assertions.*;
+class SimpleApplicationContextTest {
 
     private ApplicationContext applicationContext;
 
+    //TODO
+
     @BeforeEach
     void init() {
-        applicationContext = new HardCodedSingletonApplicationContext(FirstBean.class, OtherBean.class);
+        applicationContext = new SimpleApplicationContext(FirstBean.class, OtherBean.class);
     }
 
     @Test
