@@ -1,4 +1,4 @@
-package by.bsu.dependency.example;
+package by.bsu.dependency.example.singletone;
 
 import by.bsu.dependency.annotation.Bean;
 
@@ -9,7 +9,7 @@ public class FirstBean {
         System.out.println("Hello, I'm first bean");
     }
 
-    void doSomething() {
+    public void doSomething() {
         System.out.println("First bean is working on a project...");
     }
 }

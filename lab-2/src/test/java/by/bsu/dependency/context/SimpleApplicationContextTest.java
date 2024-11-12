@@ -1,7 +1,7 @@
 package by.bsu.dependency.context;
 
-import by.bsu.dependency.example.FirstBean;
-import by.bsu.dependency.example.OtherBean;
+import by.bsu.dependency.example.singletone.FirstBean;
+import by.bsu.dependency.example.singletone.OtherBean;
 import by.bsu.dependency.exceptions.ApplicationContextNotStartedException;
 import by.bsu.dependency.exceptions.NoSuchBeanDefinitionException;
 import org.junit.jupiter.api.BeforeEach;
@@ -12,8 +12,6 @@ import static org.junit.jupiter.api.Assertions.*;
 class SimpleApplicationContextTest {
 
     private ApplicationContext applicationContext;
-
-    //TODO
 
     @BeforeEach
     void init() {
@@ -99,4 +97,11 @@ class SimpleApplicationContextTest {
                 () -> applicationContext.isPrototype("randomName")
         );
     }
+
+    @Test
+    void testInjectDependencies() {
+        //TODO
+    }
+
+    //TODO PROTOTYPE beans tests
 }

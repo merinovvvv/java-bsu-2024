@@ -1,8 +1,6 @@
 package by.bsu.dependency.context;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -13,10 +11,6 @@ import by.bsu.dependency.exceptions.NoSuchBeanDefinitionException;
 
 
 public class HardCodedSingletonApplicationContext extends AbstractApplicationContext {
-
-    private final Map<String, Class<?>> beanDefinitions;
-    private final Map<String, Object> beans = new HashMap<>();
-
     /**
      * ! Класс существует только для базового примера !
      * <br/>
@@ -40,28 +34,10 @@ public class HardCodedSingletonApplicationContext extends AbstractApplicationCon
 
     @Override
     public void start() {
+        contextStatus = ContextStatus.STARTED;
         beanDefinitions.forEach((beanName, beanClass) -> beans.put(beanName, instantiateBean(beanClass)));
     }
 
-    @Override
-    public boolean isRunning() {
-        return !beans.isEmpty();
-    }
-
-    /**
-     * В этой реализации отсутствуют проверки статуса контекста (запущен ли он).
-     */
-    @Override
-    public boolean containsBean(String name) throws ApplicationContextNotStartedException {
-        if (beans.isEmpty()) {
-            throw new ApplicationContextNotStartedException();
-        }
-        return beans.containsKey(name);
-    }
-
-    /**
-     * В этой реализации отсутствуют проверки статуса контекста (запущен ли он) и исключения в случае отсутствия бина
-     */
     @Override
     public Object getBean(String name) throws ApplicationContextNotStartedException, NoSuchBeanDefinitionException {
         if (beans.isEmpty()) {
@@ -85,30 +61,5 @@ public class HardCodedSingletonApplicationContext extends AbstractApplicationCon
             System.out.println("Error while casting a a bean to the clazz: " + e.getMessage());
         }
         return null;
-    }
-
-    @Override
-    public boolean isPrototype(String name) throws NoSuchBeanDefinitionException {
-        if (!beans.containsKey(name)) {
-            throw new NoSuchBeanDefinitionException("No bean found with name: " + name);
-        }
-        return false;
-    }
-
-    @Override
-    public boolean isSingleton(String name) throws NoSuchBeanDefinitionException {
-        if (!beans.containsKey(name)) {
-            throw new NoSuchBeanDefinitionException("No bean found with name: " + name);
-        }
-        return true;
-    }
-
-    private <T> T instantiateBean(Class<T> beanClass) {
-        try {
-            return beanClass.getConstructor().newInstance();
-        } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException |
-                 InstantiationException e) {
-            throw new RuntimeException(e);
-        }
     }
 }

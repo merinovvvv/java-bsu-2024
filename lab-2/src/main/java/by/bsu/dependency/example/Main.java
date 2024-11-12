@@ -2,6 +2,8 @@ package by.bsu.dependency.example;
 
 import by.bsu.dependency.context.ApplicationContext;
 import by.bsu.dependency.context.HardCodedSingletonApplicationContext;
+import by.bsu.dependency.example.singletone.FirstBean;
+import by.bsu.dependency.example.singletone.OtherBean;
 
 public class Main {
 
