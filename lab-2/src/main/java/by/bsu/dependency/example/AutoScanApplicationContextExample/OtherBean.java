@@ -1,4 +1,4 @@
-package by.bsu.dependency.example.singletone;
+package by.bsu.dependency.example.AutoScanApplicationContextExample;
 
 import by.bsu.dependency.annotation.Bean;
 import by.bsu.dependency.annotation.Inject;
@@ -9,7 +9,7 @@ public class OtherBean {
     @Inject
     private FirstBean firstBean;
 
-    public void doSomething() {
+    void doSomething() {
         System.out.println("Hi, I'm other bean");
     }
 

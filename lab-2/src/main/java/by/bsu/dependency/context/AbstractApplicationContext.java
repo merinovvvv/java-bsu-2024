@@ -5,6 +5,8 @@ import by.bsu.dependency.annotation.Inject;
 import by.bsu.dependency.exceptions.ApplicationContextNotStartedException;
 import by.bsu.dependency.exceptions.NoSuchBeanDefinitionException;
 
+import static by.bsu.dependency.util.DependencyUtil.decapitalize;
+
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
@@ -25,12 +27,13 @@ public abstract class AbstractApplicationContext implements ApplicationContext {
 
     @Override
     public boolean isRunning() {
-        return !beans.isEmpty();
+        return contextStatus == ContextStatus.STARTED;
     }
+
 
     @Override
     public boolean containsBean(String name) throws ApplicationContextNotStartedException {
-        if (beans.isEmpty()) {
+        if (contextStatus == ContextStatus.NOT_STARTED) {
             throw new ApplicationContextNotStartedException();
         }
         return beans.containsKey(name);
@@ -38,15 +41,16 @@ public abstract class AbstractApplicationContext implements ApplicationContext {
 
     @Override
     public Object getBean(String name) throws ApplicationContextNotStartedException, NoSuchBeanDefinitionException {
-        if (beans.isEmpty()) {
+        if (contextStatus == ContextStatus.NOT_STARTED) {
             throw new ApplicationContextNotStartedException();
-        } else if (!beans.containsKey(name)) {
-            throw new NoSuchBeanDefinitionException("No bean found with name: " + name);
         }
         if (beanScopes.get(name) == BeanScope.PROTOTYPE) {
             Object beanObj = instantiateBean(beanDefinitions.get(name));
             injectDependencies(beanObj);
+            beans.put(name, beanObj);
             return beanObj;
+        } else if (!beans.containsKey(name)) {
+            throw new NoSuchBeanDefinitionException("No bean found with name: " + name);
         }
         return beans.get(name);
     }
@@ -58,12 +62,13 @@ public abstract class AbstractApplicationContext implements ApplicationContext {
                 if (clazz.isInstance(entry.getValue())) {
                     String beanName = entry.getKey();
                     if (beanScopes.get(beanName) == BeanScope.PROTOTYPE) {
-                        T beanObj = instantiateBean(clazz);
-                        injectDependencies(beanObj);
-                        return beanObj;
+                        return prototypeCreateAndInject(clazz);
                     }
                     return clazz.cast(entry.getValue());
                 }
+            }
+            if (beanScopes.get(decapitalize(clazz.getSimpleName())) == BeanScope.PROTOTYPE) {
+                return prototypeCreateAndInject(clazz);
             }
             throw new NoSuchBeanDefinitionException("No bean found of type: " + clazz.getName());
         } catch (ClassCastException e) {
@@ -74,18 +79,18 @@ public abstract class AbstractApplicationContext implements ApplicationContext {
 
     @Override
     public boolean isPrototype(String name) throws NoSuchBeanDefinitionException {
-        if (!beans.containsKey(name)) {
-            throw new NoSuchBeanDefinitionException("No bean found with name: " + name);
+        if (beanScopes.get(name) != null) {
+            return beanScopes.get(name) == BeanScope.PROTOTYPE;
         }
-        return beanScopes.get(name) == BeanScope.PROTOTYPE;
+        throw new NoSuchBeanDefinitionException("No bean found with name: " + name);
     }
 
     @Override
     public boolean isSingleton(String name) throws NoSuchBeanDefinitionException {
-        if (!beans.containsKey(name)) {
-            throw new NoSuchBeanDefinitionException("No bean found with name: " + name);
+        if (beanScopes.get(name) != null) {
+            return beanScopes.get(name) == BeanScope.SINGLETON;
         }
-        return beanScopes.get(name) == BeanScope.SINGLETON;
+        throw new NoSuchBeanDefinitionException("No bean found with name: " + name);
     }
 
     <T> T instantiateBean(Class<T> beanClass) {
@@ -102,12 +107,20 @@ public abstract class AbstractApplicationContext implements ApplicationContext {
             if (field.isAnnotationPresent(Inject.class)) {
                 field.setAccessible(true);
                 try {
-                    Object dependency = getBean(field.getType());
-                    field.set(beanObj, dependency);
+                    if (field.get(beanObj) == null) { // check if the dependency is already injected
+                        Object dependency = getBean(field.getType());
+                        field.set(beanObj, dependency);
+                    }
                 } catch (IllegalAccessException e) {
                     throw new RuntimeException(e);
                 }
             }
         }
+    }
+
+    private <T> T prototypeCreateAndInject(Class<T> clazz) {
+        T beanObj = instantiateBean(clazz);
+        injectDependencies(beanObj);
+        return beanObj;
     }
 }

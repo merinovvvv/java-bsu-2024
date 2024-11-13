@@ -8,6 +8,8 @@ import org.reflections.scanners.Scanners;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import static by.bsu.dependency.util.DependencyUtil.decapitalize;
+
 public class AutoScanApplicationContext extends AbstractApplicationContext {
     /**
      * Создает контекст, содержащий классы из пакета {@code packageName}, помеченные аннотацией {@code @Bean}.
@@ -19,12 +21,11 @@ public class AutoScanApplicationContext extends AbstractApplicationContext {
      * @param packageName имя сканируемого пакета
      */
     public AutoScanApplicationContext(String packageName) {
-        Reflections reflections = new Reflections(packageName, Scanners.SubTypes);
-        beanDefinitions = reflections.getSubTypesOf(Object.class).stream()
-                .filter(clazz -> clazz.isAnnotationPresent(Bean.class))
+        Reflections reflections = new Reflections(packageName, Scanners.TypesAnnotated);
+        beanDefinitions = reflections.getTypesAnnotatedWith(Bean.class).stream()
                 .collect(Collectors
                 .toMap(
-                        Class::getName,
+                        clazz -> decapitalize(clazz.getSimpleName()),
                         Function.identity()
                 )
         );
@@ -35,7 +36,7 @@ public class AutoScanApplicationContext extends AbstractApplicationContext {
         });
     }
 
-    @Override
+    @Override //TODO move to Abstract
     public void start() {
         contextStatus = ContextStatus.STARTED;
         beanDefinitions.forEach((beanName, beanClass) -> {

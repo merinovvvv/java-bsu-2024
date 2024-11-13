@@ -6,6 +6,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import by.bsu.dependency.annotation.Bean;
+import by.bsu.dependency.annotation.BeanScope;
 import by.bsu.dependency.exceptions.ApplicationContextNotStartedException;
 import by.bsu.dependency.exceptions.NoSuchBeanDefinitionException;
 
@@ -40,7 +41,7 @@ public class HardCodedSingletonApplicationContext extends AbstractApplicationCon
 
     @Override
     public Object getBean(String name) throws ApplicationContextNotStartedException, NoSuchBeanDefinitionException {
-        if (beans.isEmpty()) {
+        if (contextStatus == ContextStatus.NOT_STARTED) {
             throw new ApplicationContextNotStartedException();
         } else if (!beans.containsKey(name)) {
             throw new NoSuchBeanDefinitionException("No bean found with name: " + name);
@@ -61,5 +62,21 @@ public class HardCodedSingletonApplicationContext extends AbstractApplicationCon
             System.out.println("Error while casting a a bean to the clazz: " + e.getMessage());
         }
         return null;
+    }
+
+    @Override
+    public boolean isPrototype(String name) throws NoSuchBeanDefinitionException {
+        if (!beans.containsKey(name)) {
+            throw new NoSuchBeanDefinitionException("No bean found with name: " + name);
+        }
+        return false;
+    }
+
+        @Override
+        public boolean isSingleton(String name) throws NoSuchBeanDefinitionException {
+        if (!beans.containsKey(name)) {
+            throw new NoSuchBeanDefinitionException("No bean found with name: " + name);
+        }
+        return true;
     }
 }

@@ -1,17 +1,25 @@
 package by.bsu.dependency.context;
 
-import by.bsu.dependency.example.singletone.FirstBean;
-import by.bsu.dependency.example.singletone.OtherBean;
+import by.bsu.dependency.annotation.BeanScope;
+import by.bsu.dependency.annotation.Inject;
+import by.bsu.dependency.example.SimpleApplicationContextExample.FirstBean;
+import by.bsu.dependency.example.SimpleApplicationContextExample.OtherBean;
 import by.bsu.dependency.exceptions.ApplicationContextNotStartedException;
 import by.bsu.dependency.exceptions.NoSuchBeanDefinitionException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import java.lang.reflect.Field;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 class SimpleApplicationContextTest {
 
     private ApplicationContext applicationContext;
+
+    static class TestBean {
+        public TestBean() {}
+    }
 
     @BeforeEach
     void init() {
@@ -37,7 +45,7 @@ class SimpleApplicationContextTest {
     void testContextContainsBeans() {
         applicationContext.start();
 
-        assertThat(applicationContext.containsBean("firstBean")).isTrue();
+        assertThat(applicationContext.containsBean("firstBean")).isFalse();
         assertThat(applicationContext.containsBean("otherBean")).isTrue();
         assertThat(applicationContext.containsBean("randomName")).isFalse();
     }
@@ -71,7 +79,7 @@ class SimpleApplicationContextTest {
     @Test
     void testIsSingletonReturns() {
         applicationContext.start();
-        assertThat(applicationContext.isSingleton("firstBean")).isTrue();
+        assertThat(applicationContext.isSingleton("firstBean")).isFalse();
         assertThat(applicationContext.isSingleton("otherBean")).isTrue();
     }
 
@@ -86,7 +94,7 @@ class SimpleApplicationContextTest {
     @Test
     void testIsPrototypeReturns() {
         applicationContext.start();
-        assertThat(applicationContext.isPrototype("firstBean")).isFalse();
+        assertThat(applicationContext.isPrototype("firstBean")).isTrue();
         assertThat(applicationContext.isPrototype("otherBean")).isFalse();
     }
 
@@ -99,9 +107,30 @@ class SimpleApplicationContextTest {
     }
 
     @Test
-    void testInjectDependencies() {
-        //TODO
+    void testInstantiateBean() {
+        AbstractApplicationContext abstractApplicationContext = (AbstractApplicationContext) applicationContext;
+        TestBean bean = abstractApplicationContext.instantiateBean(TestBean.class);
+        assertNotNull(bean, "The bean should be instantiated");
     }
 
-    //TODO PROTOTYPE beans tests
+    @Test
+    void testInjectDependencies() throws NoSuchFieldException, IllegalAccessException {
+        class TestDependency {}
+        class TestBeanInjection {
+            @Inject
+            private TestDependency dependency;
+        }
+
+        TestBeanInjection testBeanInjection = new TestBeanInjection();
+        TestDependency testDependency = new TestDependency();
+
+        AbstractApplicationContext abstractApplicationContext = (AbstractApplicationContext) applicationContext;
+        abstractApplicationContext.beans.put("testDependency", testDependency);
+        abstractApplicationContext.beanScopes.put("testDependency", BeanScope.SINGLETON);
+
+        abstractApplicationContext.injectDependencies(testBeanInjection);
+        Field dependencyField = TestBeanInjection.class.getDeclaredField("dependency");
+        dependencyField.setAccessible(true);
+        assertEquals(testDependency, dependencyField.get(testBeanInjection)); //compare values
+    }
 }

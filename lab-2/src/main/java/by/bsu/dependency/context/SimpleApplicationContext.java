@@ -44,7 +44,7 @@ public class SimpleApplicationContext extends AbstractApplicationContext {
     /**
      * Помимо прочего, метод должен заниматься внедрением зависимостей в создаваемые объекты
      */
-    @Override
+    @Override //TODO move to Abstract
     public void start() {
         contextStatus = ContextStatus.STARTED;
         beanDefinitions.forEach((beanName, beanClass) -> {
