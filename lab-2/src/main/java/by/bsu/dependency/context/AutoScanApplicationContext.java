@@ -35,16 +35,4 @@ public class AutoScanApplicationContext extends AbstractApplicationContext {
             beanScopes.put(beanName, scope);
         });
     }
-
-    @Override //TODO move to Abstract
-    public void start() {
-        contextStatus = ContextStatus.STARTED;
-        beanDefinitions.forEach((beanName, beanClass) -> {
-            if (beanScopes.get(beanName) == BeanScope.SINGLETON) {
-                Object beanObj = instantiateBean(beanClass);
-                injectDependencies(beanObj);
-                beans.put(beanName, beanObj);
-            }
-        });
-    }
 }

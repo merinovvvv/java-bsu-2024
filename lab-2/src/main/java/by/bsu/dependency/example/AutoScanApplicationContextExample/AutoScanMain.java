@@ -9,10 +9,10 @@ public class AutoScanMain {
 
     public static void main(String[] args) {
         try {
-            ApplicationContext applicationContext = new AutoScanApplicationContext("by.bsu.dependency.example.SimpleApplicationContextExample");
+            ApplicationContext applicationContext = new AutoScanApplicationContext("by.bsu.dependency.example.AutoScanApplicationContextExample");
             applicationContext.start();
 
-            by.bsu.dependency.example.AutoScanApplicationContextExample.FirstBean firstBean = (FirstBean) applicationContext.getBean("firstBean"); //TODO ERROR
+            by.bsu.dependency.example.AutoScanApplicationContextExample.FirstBean firstBean = (FirstBean) applicationContext.getBean("firstBean");
             by.bsu.dependency.example.AutoScanApplicationContextExample.OtherBean otherBean = (OtherBean) applicationContext.getBean("otherBean");
 
             firstBean.printSomething();

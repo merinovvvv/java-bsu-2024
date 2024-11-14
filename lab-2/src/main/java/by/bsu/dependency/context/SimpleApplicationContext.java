@@ -40,19 +40,4 @@ public class SimpleApplicationContext extends AbstractApplicationContext {
             beanScopes.put(beanName, scope);
         });
     }
-
-    /**
-     * Помимо прочего, метод должен заниматься внедрением зависимостей в создаваемые объекты
-     */
-    @Override //TODO move to Abstract
-    public void start() {
-        contextStatus = ContextStatus.STARTED;
-        beanDefinitions.forEach((beanName, beanClass) -> {
-            if (beanScopes.get(beanName) == BeanScope.SINGLETON) {
-                Object beanObj = instantiateBean(beanClass);
-                injectDependencies(beanObj);
-                beans.put(beanName, beanObj);
-            }
-        });
-    }
 }

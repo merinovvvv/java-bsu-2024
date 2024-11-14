@@ -2,6 +2,7 @@ package by.bsu.dependency.context;
 
 import by.bsu.dependency.annotation.BeanScope;
 import by.bsu.dependency.annotation.Inject;
+import by.bsu.dependency.annotation.PostConstruct;
 import by.bsu.dependency.exceptions.ApplicationContextNotStartedException;
 import by.bsu.dependency.exceptions.NoSuchBeanDefinitionException;
 
@@ -9,6 +10,7 @@ import static by.bsu.dependency.util.DependencyUtil.decapitalize;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -23,6 +25,19 @@ public abstract class AbstractApplicationContext implements ApplicationContext {
     protected enum ContextStatus {
         NOT_STARTED,
         STARTED
+    }
+
+    @Override
+    public void start() {
+        contextStatus = ContextStatus.STARTED;
+        beanDefinitions.forEach((beanName, beanClass) -> {
+            if (beanScopes.get(beanName) == BeanScope.SINGLETON) {
+                Object beanObj = instantiateBean(beanClass);
+                injectDependencies(beanObj);
+                beans.put(beanName, beanObj);
+                invokePostConstructs(beanClass, beanObj);
+            }
+        });
     }
 
     @Override
@@ -45,10 +60,11 @@ public abstract class AbstractApplicationContext implements ApplicationContext {
             throw new ApplicationContextNotStartedException();
         }
         if (beanScopes.get(name) == BeanScope.PROTOTYPE) {
-            Object beanObj = instantiateBean(beanDefinitions.get(name));
-            injectDependencies(beanObj);
-            beans.put(name, beanObj);
-            return beanObj;
+            prototypeCreateAndInject(name, beanDefinitions.get(name));
+//            Object beanObj = instantiateBean(beanDefinitions.get(name));
+//            injectDependencies(beanObj);
+//            beans.put(name, beanObj);
+//            return beanObj;
         } else if (!beans.containsKey(name)) {
             throw new NoSuchBeanDefinitionException("No bean found with name: " + name);
         }
@@ -62,13 +78,13 @@ public abstract class AbstractApplicationContext implements ApplicationContext {
                 if (clazz.isInstance(entry.getValue())) {
                     String beanName = entry.getKey();
                     if (beanScopes.get(beanName) == BeanScope.PROTOTYPE) {
-                        return prototypeCreateAndInject(clazz);
+                        return prototypeCreateAndInject(beanName, clazz);
                     }
                     return clazz.cast(entry.getValue());
                 }
             }
             if (beanScopes.get(decapitalize(clazz.getSimpleName())) == BeanScope.PROTOTYPE) {
-                return prototypeCreateAndInject(clazz);
+                return prototypeCreateAndInject(decapitalize(clazz.getSimpleName()), clazz);
             }
             throw new NoSuchBeanDefinitionException("No bean found of type: " + clazz.getName());
         } catch (ClassCastException e) {
@@ -118,9 +134,23 @@ public abstract class AbstractApplicationContext implements ApplicationContext {
         }
     }
 
-    private <T> T prototypeCreateAndInject(Class<T> clazz) {
+    private <T> T prototypeCreateAndInject(String beanName, Class<T> clazz) { //TODO Tests
         T beanObj = instantiateBean(clazz);
         injectDependencies(beanObj);
+        beans.put(beanName, beanObj);
+        invokePostConstructs(clazz, beanObj);
         return beanObj;
+    }
+
+    private void invokePostConstructs(Class<?> beanClass, Object beanObj) { //TODO Tests and Examples
+        for (Method method : beanClass.getDeclaredMethods()) {
+            if (method.isAnnotationPresent(PostConstruct.class)) {
+                try {
+                    method.invoke(beanObj);
+                } catch (IllegalAccessException | InvocationTargetException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
     }
 }
