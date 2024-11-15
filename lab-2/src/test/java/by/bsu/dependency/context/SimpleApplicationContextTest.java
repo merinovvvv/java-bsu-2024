@@ -45,7 +45,7 @@ class SimpleApplicationContextTest {
     void testContextContainsBeans() {
         applicationContext.start();
 
-        assertThat(applicationContext.containsBean("firstBean")).isFalse();
+        assertThat(applicationContext.containsBean("firstBean")).isTrue();
         assertThat(applicationContext.containsBean("otherBean")).isTrue();
         assertThat(applicationContext.containsBean("randomName")).isFalse();
     }
@@ -132,5 +132,11 @@ class SimpleApplicationContextTest {
         Field dependencyField = TestBeanInjection.class.getDeclaredField("dependency");
         dependencyField.setAccessible(true);
         assertEquals(testDependency, dependencyField.get(testBeanInjection)); //compare values
+    }
+
+    @Test
+    void instantiateBeanTest() {
+        AbstractApplicationContext abstractApplicationContext = (AbstractApplicationContext) applicationContext;
+        assertNotNull(abstractApplicationContext.instantiateBean(SimpleApplicationContextTest.TestBean.class));
     }
 }

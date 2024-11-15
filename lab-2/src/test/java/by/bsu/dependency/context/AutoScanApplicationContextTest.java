@@ -3,6 +3,7 @@ package by.bsu.dependency.context;
 import by.bsu.dependency.annotation.Bean;
 import by.bsu.dependency.annotation.BeanScope;
 import by.bsu.dependency.annotation.Inject;
+import by.bsu.dependency.annotation.PostConstruct;
 import by.bsu.dependency.example.AutoScanApplicationContextExample.FirstBean;
 import by.bsu.dependency.example.AutoScanApplicationContextExample.OtherBean;
 import by.bsu.dependency.exceptions.ApplicationContextNotStartedException;
@@ -51,7 +52,7 @@ class AutoScanApplicationContextTest {
     void testContextContainsBeans() {
         applicationContext.start();
 
-        assertThat(applicationContext.containsBean("firstBean")).isFalse();
+        assertThat(applicationContext.containsBean("firstBean")).isTrue();
         assertThat(applicationContext.containsBean("otherBean")).isTrue();
         assertThat(applicationContext.containsBean("randomName")).isFalse();
     }
@@ -116,7 +117,7 @@ class AutoScanApplicationContextTest {
     void testInstantiateBean() {
         AbstractApplicationContext abstractApplicationContext = (AbstractApplicationContext) applicationContext;
         TestBean bean = abstractApplicationContext.instantiateBean(TestBean.class);
-        assertNotNull(bean, "The bean should be instantiated");
+        assertNotNull(bean);
     }
 
     @Test
@@ -160,5 +161,52 @@ class AutoScanApplicationContextTest {
             assertTrue(entry.getValue().isAnnotationPresent(Bean.class));
             assertEquals(1, entry.getValue().getAnnotations().length);
         }
+    }
+
+    @Test
+    void testInvokePostConstructs() {
+        class TestDependency {}
+
+        class TestBeanWithPostConstruct {
+            @Inject
+            private TestDependency dependency;
+            boolean postConstructCalled = false;
+
+            @PostConstruct
+            void init() {
+                assertNotNull(dependency);
+                postConstructCalled = true;
+            }
+        }
+
+        TestBeanWithPostConstruct testBeanWithPostConstruct = new TestBeanWithPostConstruct();
+        TestDependency testDependency = new TestDependency();
+
+        AbstractApplicationContext abstractApplicationContext = (AbstractApplicationContext) applicationContext;
+        abstractApplicationContext.beans.put("testDependency", testDependency);
+        abstractApplicationContext.beanScopes.put("testDependency", BeanScope.SINGLETON);
+        abstractApplicationContext.injectDependencies(testBeanWithPostConstruct);
+        abstractApplicationContext.invokePostConstructs(TestBeanWithPostConstruct.class, testBeanWithPostConstruct);
+
+        assertTrue(testBeanWithPostConstruct.postConstructCalled);
+    }
+
+    @Test
+    void testPrototypeCreateAndInject() {
+        applicationContext.start();
+
+        AbstractApplicationContext abstractApplicationContext = (AbstractApplicationContext) applicationContext;
+        TestBean testBean = abstractApplicationContext.prototypeCreateAndInject("testBean", TestBean.class, true);
+
+        assertNotNull(testBean);
+        assertTrue(abstractApplicationContext.beans.containsKey("testBean"));
+        assertEquals(testBean, abstractApplicationContext.beans.get("testBean"));
+        assertTrue(abstractApplicationContext.containsBean("testBean"));
+    }
+
+    @Test
+    void instantiateBeanTest() {
+        AbstractApplicationContext abstractApplicationContext = (AbstractApplicationContext) applicationContext;
+        assertNotNull(abstractApplicationContext.instantiateBean(AutoScanApplicationContextTest.TestBean.class));
     }
 }

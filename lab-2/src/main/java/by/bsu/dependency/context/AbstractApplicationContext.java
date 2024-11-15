@@ -60,11 +60,7 @@ public abstract class AbstractApplicationContext implements ApplicationContext {
             throw new ApplicationContextNotStartedException();
         }
         if (beanScopes.get(name) == BeanScope.PROTOTYPE) {
-            prototypeCreateAndInject(name, beanDefinitions.get(name));
-//            Object beanObj = instantiateBean(beanDefinitions.get(name));
-//            injectDependencies(beanObj);
-//            beans.put(name, beanObj);
-//            return beanObj;
+            prototypeCreateAndInject(name, beanDefinitions.get(name), true);
         } else if (!beans.containsKey(name)) {
             throw new NoSuchBeanDefinitionException("No bean found with name: " + name);
         }
@@ -78,13 +74,13 @@ public abstract class AbstractApplicationContext implements ApplicationContext {
                 if (clazz.isInstance(entry.getValue())) {
                     String beanName = entry.getKey();
                     if (beanScopes.get(beanName) == BeanScope.PROTOTYPE) {
-                        return prototypeCreateAndInject(beanName, clazz);
+                        return prototypeCreateAndInject(beanName, clazz, true);
                     }
                     return clazz.cast(entry.getValue());
                 }
             }
             if (beanScopes.get(decapitalize(clazz.getSimpleName())) == BeanScope.PROTOTYPE) {
-                return prototypeCreateAndInject(decapitalize(clazz.getSimpleName()), clazz);
+                return prototypeCreateAndInject(decapitalize(clazz.getSimpleName()), clazz, false);
             }
             throw new NoSuchBeanDefinitionException("No bean found of type: " + clazz.getName());
         } catch (ClassCastException e) {
@@ -134,18 +130,21 @@ public abstract class AbstractApplicationContext implements ApplicationContext {
         }
     }
 
-    private <T> T prototypeCreateAndInject(String beanName, Class<T> clazz) { //TODO Tests
+    <T> T prototypeCreateAndInject(String beanName, Class<T> clazz, boolean isPostConstructInvoke) { //test is in the AutoScanApplicationContextTest.java
         T beanObj = instantiateBean(clazz);
         injectDependencies(beanObj);
         beans.put(beanName, beanObj);
-        invokePostConstructs(clazz, beanObj);
+        if (isPostConstructInvoke) {
+            invokePostConstructs(clazz, beanObj);
+        }
         return beanObj;
     }
 
-    private void invokePostConstructs(Class<?> beanClass, Object beanObj) { //TODO Tests and Examples
+    void invokePostConstructs(Class<?> beanClass, Object beanObj) { //test is in the AutoScanApplicationContextTest.java
         for (Method method : beanClass.getDeclaredMethods()) {
             if (method.isAnnotationPresent(PostConstruct.class)) {
                 try {
+                    method.setAccessible(true);
                     method.invoke(beanObj);
                 } catch (IllegalAccessException | InvocationTargetException e) {
                     throw new RuntimeException(e);

@@ -8,11 +8,16 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class HardCodedSingletonApplicationContextTest {
 
     private ApplicationContext applicationContext;
+
+    static class TestBean {
+        public TestBean() {}
+    }
 
     @BeforeEach
     void init() {
@@ -99,5 +104,9 @@ class HardCodedSingletonApplicationContextTest {
         );
     }
 
-    //TODO instantiateBean
+    @Test
+    void instantiateBeanTest() {
+        AbstractApplicationContext abstractApplicationContext = (AbstractApplicationContext) applicationContext;
+        assertNotNull(abstractApplicationContext.instantiateBean(TestBean.class));
+    }
 }
