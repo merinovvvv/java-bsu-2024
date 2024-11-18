@@ -21,18 +21,22 @@ public class AutoScanApplicationContext extends AbstractApplicationContext {
      * @param packageName имя сканируемого пакета
      */
     public AutoScanApplicationContext(String packageName) {
-        Reflections reflections = new Reflections(packageName, Scanners.TypesAnnotated);
-        beanDefinitions = reflections.getTypesAnnotatedWith(Bean.class).stream()
-                .collect(Collectors
-                .toMap(
-                        clazz -> decapitalize(clazz.getSimpleName()),
-                        Function.identity()
-                )
-        );
+        scanPackage(packageName);
 
         beanDefinitions.forEach((beanName, beanClass) -> {
             BeanScope scope = beanClass.getAnnotation(Bean.class).scope();
             beanScopes.put(beanName, scope);
         });
+    }
+
+    private void scanPackage(String packageName) {
+        Reflections reflections = new Reflections(packageName, Scanners.TypesAnnotated);
+        beanDefinitions = reflections.getTypesAnnotatedWith(Bean.class).stream()
+                .collect(Collectors
+                        .toMap(
+                                clazz -> decapitalize(clazz.getSimpleName()),
+                                Function.identity()
+                        )
+                );
     }
 }
